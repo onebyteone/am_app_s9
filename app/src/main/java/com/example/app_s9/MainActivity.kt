@@ -1,23 +1,29 @@
 package com.example.app_s9
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
-    
+
     private lateinit var sharedPreferencesHelper: SharedPreferencesHelper
-    private lateinit var editTextUsername: EditText
-    private lateinit var buttonSave: Button
-    private lateinit var buttonLoad: Button
-    private lateinit var buttonClear: Button
-    private lateinit var textViewResult: TextView
+    private lateinit var viewModel: MainViewModel
+
+    private lateinit var editTextName: TextInputEditText
+    private lateinit var editTextAge: TextInputEditText
+    private lateinit var editTextEmail: TextInputEditText
+    private lateinit var buttonSaveProfile: MaterialButton
+    private lateinit var buttonLoadProfile: MaterialButton
+    private lateinit var buttonResetCounter: MaterialButton
+    private lateinit var textViewOpenCount: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,77 +36,76 @@ class MainActivity : AppCompatActivity() {
         
         // Inicializar SharedPreferencesHelper
         sharedPreferencesHelper = SharedPreferencesHelper(this)
-        
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(sharedPreferencesHelper) as T
+            }
+        })[MainViewModel::class.java]
+
         // Inicializar vistas
         initViews()
-        
+
         // Configurar listeners
         setupListeners()
-        
-        // Verificar si es la primera vez que se abre la app
-        checkFirstTime()
+
+        updateOpenCount()
     }
-    
+
     private fun initViews() {
-        editTextUsername = findViewById(R.id.editTextUsername)
-        buttonSave = findViewById(R.id.buttonSave)
-        buttonLoad = findViewById(R.id.buttonLoad)
-        buttonClear = findViewById(R.id.buttonClear)
-        textViewResult = findViewById(R.id.textViewResult)
+        editTextName = findViewById(R.id.editTextName)
+        editTextAge = findViewById(R.id.editTextAge)
+        editTextEmail = findViewById(R.id.editTextEmail)
+        buttonSaveProfile = findViewById(R.id.buttonSaveProfile)
+        buttonLoadProfile = findViewById(R.id.buttonLoadProfile)
+        buttonResetCounter = findViewById(R.id.buttonResetCounter)
+        textViewOpenCount = findViewById(R.id.textViewOpenCount)
     }
-    
+
     private fun setupListeners() {
-        buttonSave.setOnClickListener {
-            saveData()
-        }
-        
-        buttonLoad.setOnClickListener {
-            loadData()
-        }
-        
-        buttonClear.setOnClickListener {
-            clearAllData()
-        }
+        buttonSaveProfile.setOnClickListener { saveProfile() }
+        buttonLoadProfile.setOnClickListener { loadProfile() }
+        buttonResetCounter.setOnClickListener { resetCounter() }
     }
-    
-    private fun saveData() {
-        val username = editTextUsername.text.toString().trim()
-        
-        if (username.isEmpty()) {
-            Toast.makeText(this, "Por favor ingresa un nombre", Toast.LENGTH_SHORT).show()
+
+    private fun updateOpenCount() {
+        val count = viewModel.incrementOpenCount()
+        textViewOpenCount.text = "Veces abierta: $count"
+    }
+
+    private fun saveProfile() {
+        val name = editTextName.text.toString().trim()
+        val ageText = editTextAge.text.toString().trim()
+        val email = editTextEmail.text.toString().trim()
+
+        val age = ageText.toIntOrNull()
+
+        if (name.isEmpty() || age == null || email.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
-        
-        // Guardar datos
-        sharedPreferencesHelper.saveString(SharedPreferencesHelper.KEY_USERNAME, username)
-        sharedPreferencesHelper.saveBoolean(SharedPreferencesHelper.KEY_IS_FIRST_TIME, false)
-        sharedPreferencesHelper.saveInt(SharedPreferencesHelper.KEY_USER_ID, (1000..9999).random())
-        
-        Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
-        editTextUsername.setText("")
+
+        viewModel.saveUserProfile(UserProfile(name, age, email))
+        Toast.makeText(this, "Perfil guardado", Toast.LENGTH_SHORT).show()
+        editTextName.setText("")
+        editTextAge.setText("")
+        editTextEmail.setText("")
     }
-    
-    private fun loadData() {
-        val username = sharedPreferencesHelper.getString(SharedPreferencesHelper.KEY_USERNAME, "Sin nombre")
-        val isFirstTime = sharedPreferencesHelper.getBoolean(SharedPreferencesHelper.KEY_IS_FIRST_TIME, true)
-        val userId = sharedPreferencesHelper.getInt(SharedPreferencesHelper.KEY_USER_ID, 0)
-        
-        val result = "Usuario: $username\nID: $userId\nPrimera vez: ${if (isFirstTime) "Sí" else "No"}"
-        textViewResult.text = result
-    }
-    
-    private fun clearAllData() {
-        sharedPreferencesHelper.clearAll()
-        textViewResult.text = ""
-        editTextUsername.setText("")
-        Toast.makeText(this, "Todas las preferencias han sido eliminadas", Toast.LENGTH_SHORT).show()
-    }
-    
-    private fun checkFirstTime() {
-        val isFirstTime = sharedPreferencesHelper.getBoolean(SharedPreferencesHelper.KEY_IS_FIRST_TIME, true)
-        
-        if (isFirstTime) {
-            Toast.makeText(this, "¡Bienvenido por primera vez!", Toast.LENGTH_LONG).show()
+
+    private fun loadProfile() {
+        val profile = viewModel.loadUserProfile()
+        if (profile == null) {
+            Toast.makeText(this, "No hay perfil guardado", Toast.LENGTH_SHORT).show()
+        } else {
+            editTextName.setText(profile.name)
+            editTextAge.setText(profile.age.toString())
+            editTextEmail.setText(profile.email)
+            Toast.makeText(this, "Perfil cargado", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun resetCounter() {
+        viewModel.resetOpenCount()
+        textViewOpenCount.text = "Veces abierta: 0"
     }
 }
