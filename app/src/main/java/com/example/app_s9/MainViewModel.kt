@@ -1,5 +1,6 @@
 package com.example.app_s9
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 
 class MainViewModel(private val prefs: SharedPreferencesHelper) : ViewModel() {
@@ -31,5 +32,16 @@ class MainViewModel(private val prefs: SharedPreferencesHelper) : ViewModel() {
         } else {
             null
         }
+    }
+
+    fun getThemeMode(): Int {
+        return prefs.getInt(
+            SharedPreferencesHelper.KEY_THEME_MODE,
+            AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
+
+    fun saveThemeMode(mode: Int) {
+        prefs.saveInt(SharedPreferencesHelper.KEY_THEME_MODE, mode)
     }
 }
