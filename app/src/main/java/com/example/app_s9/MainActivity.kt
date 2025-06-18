@@ -7,6 +7,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
@@ -24,7 +26,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonLoadProfile: MaterialButton
     private lateinit var buttonResetCounter: MaterialButton
     private lateinit var textViewOpenCount: TextView
+    private lateinit var switchDarkMode: SwitchCompat
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedPreferencesHelper = SharedPreferencesHelper(this)
+        val themeMode = sharedPreferencesHelper.getInt(
+            SharedPreferencesHelper.KEY_THEME_MODE,
+            AppCompatDelegate.MODE_NIGHT_NO
+        )
+        AppCompatDelegate.setDefaultNightMode(themeMode)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -34,8 +44,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         
-        // Inicializar SharedPreferencesHelper
-        sharedPreferencesHelper = SharedPreferencesHelper(this)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
@@ -60,12 +68,24 @@ class MainActivity : AppCompatActivity() {
         buttonLoadProfile = findViewById(R.id.buttonLoadProfile)
         buttonResetCounter = findViewById(R.id.buttonResetCounter)
         textViewOpenCount = findViewById(R.id.textViewOpenCount)
+        switchDarkMode = findViewById(R.id.switchDarkMode)
+        switchDarkMode.isChecked =
+            viewModel.getThemeMode() == AppCompatDelegate.MODE_NIGHT_YES
     }
 
     private fun setupListeners() {
         buttonSaveProfile.setOnClickListener { saveProfile() }
         buttonLoadProfile.setOnClickListener { loadProfile() }
         buttonResetCounter.setOnClickListener { resetCounter() }
+        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            val mode = if (isChecked) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+            viewModel.saveThemeMode(mode)
+            AppCompatDelegate.setDefaultNightMode(mode)
+        }
     }
 
     private fun updateOpenCount() {
