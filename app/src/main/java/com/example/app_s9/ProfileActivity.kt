@@ -20,7 +20,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var editTextAge: TextInputEditText
     private lateinit var editTextEmail: TextInputEditText
     private lateinit var buttonSaveProfile: MaterialButton
-    private lateinit var buttonLoadProfile: MaterialButton
+    private lateinit var buttonClearFields: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         sharedPreferencesHelper = SharedPreferencesHelper(this)
@@ -43,6 +43,7 @@ class ProfileActivity : AppCompatActivity() {
         })[MainViewModel::class.java]
 
         initViews()
+        loadProfile()
         setupListeners()
     }
 
@@ -61,12 +62,12 @@ class ProfileActivity : AppCompatActivity() {
         editTextAge = findViewById(R.id.editTextAge)
         editTextEmail = findViewById(R.id.editTextEmail)
         buttonSaveProfile = findViewById(R.id.buttonSaveProfile)
-        buttonLoadProfile = findViewById(R.id.buttonLoadProfile)
+        buttonClearFields = findViewById(R.id.buttonClearFields)
     }
 
     private fun setupListeners() {
         buttonSaveProfile.setOnClickListener { saveProfile() }
-        buttonLoadProfile.setOnClickListener { loadProfile() }
+        buttonClearFields.setOnClickListener { clearFields() }
     }
 
     private fun saveProfile() {
@@ -90,13 +91,16 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun loadProfile() {
         val profile = viewModel.loadUserProfile()
-        if (profile == null) {
-            Toast.makeText(this, "No hay perfil guardado", Toast.LENGTH_SHORT).show()
-        } else {
+        if (profile != null) {
             editTextName.setText(profile.name)
             editTextAge.setText(profile.age.toString())
             editTextEmail.setText(profile.email)
-            Toast.makeText(this, "Perfil cargado", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun clearFields() {
+        editTextName.setText("")
+        editTextAge.setText("")
+        editTextEmail.setText("")
     }
 }
