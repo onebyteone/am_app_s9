@@ -65,13 +65,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateOpenCount() {
         val count = viewModel.incrementOpenCount()
-        textViewOpenCount.text = "Veces abierta: $count"
+        textViewOpenCount.text = count.toString()
     }
 
 
     private fun resetCounter() {
         viewModel.resetOpenCount()
-        textViewOpenCount.text = "Veces abierta: 0"
+        textViewOpenCount.text = "0"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

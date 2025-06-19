@@ -17,6 +17,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <ImageView
+            android:id="@+id/imageViewAvatar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_user_circle" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,10 +71,10 @@
             android:layout_marginBottom="16dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonLoadProfile"
+            android:id="@+id/buttonClearFields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cargar"
+            android:text="Limpiar"
             android:layout_marginBottom="16dp" />
 
     </LinearLayout>
