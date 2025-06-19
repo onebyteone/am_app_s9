@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">app_s9</string>
+    <string name="title_preferences">Preferencias</string>
+    <string name="title_profile">Perfil</string>
 </resources>
