@@ -51,7 +51,11 @@ class MainActivity : AppCompatActivity() {
         // Configurar listeners
         setupListeners()
 
-        updateOpenCount()
+        if (savedInstanceState == null) {
+            updateOpenCount()
+        } else {
+            textViewOpenCount.text = viewModel.getOpenCount().toString()
+        }
     }
 
     private fun initViews() {
