@@ -84,9 +84,6 @@ class ProfileActivity : AppCompatActivity() {
 
         viewModel.saveUserProfile(UserProfile(name, age, email))
         Toast.makeText(this, "Perfil guardado", Toast.LENGTH_SHORT).show()
-        editTextName.setText("")
-        editTextAge.setText("")
-        editTextEmail.setText("")
     }
 
     private fun loadProfile() {
