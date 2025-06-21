@@ -1,20 +1,26 @@
-# App S9 - SharedPreferences Demo
+# App S9 - SharedPreferences
 
-Aplicación Android de ejemplo que demuestra el uso básico de SharedPreferences para almacenamiento persistente de datos.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/onebyteone/am_app_s9?include_prereleases)](https://github.com/onebyteone/am_app_s9/releases)
+[![SDK](https://img.shields.io/badge/SDK-21--34-brightgreen)](#)
+
+Aplicación Android que demuestra el uso básico de SharedPreferences para almacenamiento persistente de datos.
 
 ## 📱 Descripción
 
 Esta aplicación implementa un sistema simple de SharedPreferences que permite:
 - Guardar y recuperar datos de usuario
-- Detectar la primera ejecución de la app
-- Limpiar todas las preferencias guardadas
+- Visualizar contador de visitas
+- Almacenar datos de perfil de usuario
+- Cambiar de tema a modo oscuro o claro
 
 ## 🚀 Características
 
-- **SharedPreferencesHelper**: Clase wrapper para simplificar el uso de SharedPreferences
-- **Tipos de datos soportados**: String, Boolean, Int, Float, Long
-- **Interfaz simple**: Campos de entrada y botones para interactuar con las preferencias
-- **Persistencia**: Los datos se mantienen incluso después de cerrar la aplicación
+- **SharedPreferencesHelper**: clase auxiliar que facilita leer y escribir preferencias.
+- **Gestión de perfil**: guarda nombre, edad y correo electrónico del usuario.
+- **Contador de aperturas**: registra cuántas veces se inició la aplicación.
+- **Modo oscuro**: configurable desde la pantalla de preferencias y persistente entre sesiones.
+- **Datos persistentes**: toda la información se conserva aun después de cerrar la app.
 
 ## 📋 Requisitos
 
@@ -38,24 +44,47 @@ git clone https://github.com/GxJohan/app_s9.git
 
 ## 💻 Uso
 
-1. **Guardar datos**: Ingresa tu nombre y presiona "Guardar"
-2. **Cargar datos**: Presiona "Cargar" para ver los datos guardados
-3. **Limpiar datos**: Presiona "Limpiar Todo" para eliminar todas las preferencias
+1. Al abrir la aplicación verás un contador de cuántas veces se inició.
+2. Pulsa **Reiniciar contador** para llevar ese valor a cero.
+3. Desde el menú de la barra superior accede a **Perfil** para guardar tu información personal.
+4. En **Preferencias** puedes activar o desactivar el modo oscuro.
+5. La opción **Acerca de** muestra datos del desarrollador.
+
+## 📷 Capturas de Pantalla
+
+<div align="center">
+  <img src="https://i.imgur.com/V6nfkWM.png" width="220"/>
+  <img src="https://i.imgur.com/IOLMupd.png" width="220"/>
+  <img src="https://i.imgur.com/xrG7Yl3.png" width="220"/>
+  <img src="https://i.imgur.com/Z5OB7CU.png" width="220"/>
+  <img src="https://i.imgur.com/bK1PmhZ.png" width="220"/>
+  <img src="https://i.imgur.com/2S9HYih.png" width="220"/>
+</div>
 
 ## 📂 Estructura del Proyecto
 
 ```
 app_s9/
 ├── app/
+│   ├── build.gradle.kts
 │   └── src/
 │       └── main/
 │           ├── java/com/example/app_s9/
+│           │   ├── AboutActivity.kt
 │           │   ├── MainActivity.kt
-│           │   └── SharedPreferencesHelper.kt
-│           └── res/
-│               └── layout/
-│                   └── activity_main.xml
-└── SharedPreferences_Guide.md
+│           │   ├── MainViewModel.kt
+│           │   ├── PreferencesActivity.kt
+│           │   ├── ProfileActivity.kt
+│           │   ├── SharedPreferencesHelper.kt
+│           │   └── UserProfile.kt
+│           └── res/layout/
+│               ├── activity_about.xml
+│               ├── activity_main.xml
+│               ├── activity_preferences.xml
+│               └── activity_profile.xml
+├── SharedPreferences_Guide.md
+├── build.gradle.kts
+└── settings.gradle.kts
 ```
 
 ## 📖 Documentación
